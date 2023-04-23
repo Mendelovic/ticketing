@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Password } from "../services/password";
 
 // An interface that describes the properties
 // that are required to create a new User.
@@ -32,6 +33,18 @@ const userSchema = new mongoose.Schema<IUserAttr>({
     type: String,
     required: true,
   },
+});
+
+// middleware function implemented in mongoose
+// will run every time 'save' on user is called.
+// 'this' refers to the user mongo document
+userSchema.pre("save", async function (done) {
+  if (this.isModified("password")) {
+    const hashed = await Password.toHash(this.get("password"));
+    this.set("password", hashed);
+  }
+
+  done();
 });
 
 // Workaround the mongoose problem with TS
