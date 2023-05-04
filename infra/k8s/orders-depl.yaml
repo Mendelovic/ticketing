@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: tickets-depl
+  name: orders-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: tickets
+      app: orders
   template:
     metadata:
       labels:
-        app: tickets
+        app: orders
     spec:
       containers:
-        - name: tickets
-          image: mendelovic/tickets
+        - name: orders
+          image: mendelovic/orders
           env:
             - name: RABBITMQ_CLIENT_NAME
               valueFrom:
@@ -23,7 +23,7 @@ spec:
             - name: AMQP_URL
               value: "amqp://rabbitmq-srv:5672"
             - name: MONGO_URI
-              value: mongodb://tickets-mongo-srv:27017/tickets
+              value: mongodb://orders-mongo-srv:27017/orders
             - name: JWT_KEY
               valueFrom:
                 secretKeyRef:
@@ -33,12 +33,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: tickets-srv
+  name: orders-srv
 spec:
   selector:
-    app: tickets
+    app: orders
   ports:
-    - name: tickets
+    - name: orders
       protocol: TCP
       port: 3000
       targetPort: 3000

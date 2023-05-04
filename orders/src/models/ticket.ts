@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
+import { Order, OrderStatus } from "./order";
 
 interface ITicketAttrs {
   title: string;
   price: number;
-  userId: string;
 }
-interface ITicketDoc extends mongoose.Document {
+export interface ITicketDoc extends mongoose.Document {
   title: string;
   price: number;
-  userId: string;
+  isReserved(): Promise<boolean>;
 }
 
 interface ITicketModel extends mongoose.Model<ITicketDoc> {
@@ -24,10 +24,7 @@ const ticketSchema = new mongoose.Schema<ITicketAttrs>(
     price: {
       type: Number,
       required: true,
-    },
-    userId: {
-      type: String,
-      required: true,
+      min: 0,
     },
   },
   {
@@ -42,6 +39,24 @@ const ticketSchema = new mongoose.Schema<ITicketAttrs>(
 
 ticketSchema.statics.build = (attrs: ITicketAttrs) => {
   return new Ticket(attrs);
+};
+
+// Run query to look at all orders. Find an order where the ticket
+// is the ticket we just found and the orders status is not cancelled
+// if we find an order from that means the ticket is reserved
+ticketSchema.methods.isReserved = async function () {
+  const existingOrder = await Order.findOne({
+    ticket: this,
+    status: {
+      $in: [
+        OrderStatus.Created,
+        OrderStatus.AwaitingPayment,
+        OrderStatus.Complete,
+      ],
+    },
+  });
+
+  return !!existingOrder;
 };
 
 const Ticket = mongoose.model<ITicketDoc, ITicketModel>("Ticket", ticketSchema);

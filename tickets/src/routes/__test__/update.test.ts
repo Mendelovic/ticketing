@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
+import { TicketUpdatedPublisher } from "../../events/publishers/ticket-updated-publisher";
 
 it("returns a 404 if the provided id does not exist", async () => {
   const randomId = new mongoose.Types.ObjectId().toHexString();
@@ -84,4 +85,24 @@ it("updates the ticket provided valid inputs", async () => {
 
   expect(ticketResponse.body.title).toEqual(updatedTitle);
   expect(ticketResponse.body.price).toEqual(updatedPrice);
+});
+
+it("publishes an event", async () => {
+  const cookie = global.signin();
+
+  const res = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", cookie)
+    .send({ title: "test", price: 20 });
+
+  const updatedTitle = "UpdatedTitle";
+  const updatedPrice = 250;
+
+  await request(app)
+    .put(`/api/tickets/${res.body.id}`)
+    .set("Cookie", cookie)
+    .send({ title: updatedTitle, price: updatedPrice })
+    .expect(200);
+
+  expect(TicketUpdatedPublisher.prototype.publish).toHaveBeenCalled();
 });

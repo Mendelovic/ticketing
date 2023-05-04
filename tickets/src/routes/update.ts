@@ -7,6 +7,8 @@ import {
   requireAuth,
   validateRequest,
 } from "@mendeltickets/common";
+import { amqpConnection } from "../amqpConnection";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
 
 const router = express.Router();
 
@@ -36,6 +38,13 @@ router.put(
       price: req.body.price,
     });
     await ticket.save();
+
+    new TicketUpdatedPublisher(amqpConnection.connection).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.send(ticket);
   }

@@ -22,6 +22,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: mendelovic/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: mendelovic/client
       context: client
       docker:

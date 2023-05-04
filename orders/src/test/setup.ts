@@ -1,7 +1,5 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
-import request from "supertest";
-import { app } from "../app";
 import jwt from "jsonwebtoken";
 
 declare global {
@@ -9,8 +7,8 @@ declare global {
 }
 
 jest.mock("../amqpConnection");
-jest.mock("../events/publishers/ticket-created-publisher");
-jest.mock("../events/publishers/ticket-updated-publisher");
+// jest.mock("../events/publishers/ticket-created-publisher");
+// jest.mock("../events/publishers/ticket-updated-publisher");
 
 let mongo: any;
 beforeAll(async () => {
