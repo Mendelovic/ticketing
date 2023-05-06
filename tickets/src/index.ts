@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 import { app } from "./app";
 import { amqpConnection } from "./amqpConnection";
+import { OrderCreatedConsumer } from "./events/consumers/order-created-consumer";
+import { OrderCancelledConsumer } from "./events/consumers/order-cancelled-consumer";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -19,6 +21,10 @@ const start = async () => {
       process.env.AMQP_URL,
       process.env.RABBITMQ_CLIENT_NAME
     );
+
+    new OrderCreatedConsumer(amqpConnection.connection).startConsuming();
+    new OrderCancelledConsumer(amqpConnection.connection).startConsuming();
+
     amqpConnection.connection.on("close", () => {
       process.exit();
     });

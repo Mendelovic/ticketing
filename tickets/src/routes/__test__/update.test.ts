@@ -1,6 +1,7 @@
 import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
+import { Ticket } from "../../models/ticket";
 import { TicketUpdatedPublisher } from "../../events/publishers/ticket-updated-publisher";
 
 it("returns a 404 if the provided id does not exist", async () => {
@@ -105,4 +106,29 @@ it("publishes an event", async () => {
     .expect(200);
 
   expect(TicketUpdatedPublisher.prototype.publish).toHaveBeenCalled();
+});
+
+it("rejects updates if the  ticket is reserved", async () => {
+  const cookie = global.signin();
+
+  // Create ticket
+  const res = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", cookie)
+    .send({ title: "test", price: 20 });
+
+  // Add orderId (meaning it is reserved and cannot be edited)
+  const ticket = await Ticket.findById(res.body.id);
+  ticket!.set({ orderId: new mongoose.Types.ObjectId().toHexString() });
+  await ticket!.save();
+
+  // Update ticket
+  const updatedTitle = "UpdatedTitle";
+  const updatedPrice = 250;
+
+  await request(app)
+    .put(`/api/tickets/${res.body.id}`)
+    .set("Cookie", cookie)
+    .send({ title: updatedTitle, price: updatedPrice })
+    .expect(400);
 });

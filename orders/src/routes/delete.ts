@@ -6,6 +6,8 @@ import {
 } from "@mendeltickets/common";
 import express, { Request, Response } from "express";
 import { Order } from "../models/order";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
+import { amqpConnection } from "../amqpConnection";
 
 const router = express.Router();
 
@@ -16,7 +18,7 @@ router.delete(
   async (req: Request, res: Response) => {
     const { orderId } = req.params;
 
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate("ticket");
 
     if (!order) {
       throw new NotFoundError();
@@ -30,6 +32,13 @@ router.delete(
     await order.save();
 
     // Publishing an event saying this was cancelled
+    new OrderCancelledPublisher(amqpConnection.connection).publish({
+      id: order.id,
+      version: order.version,
+      ticket: {
+        id: order.ticket.id,
+      },
+    });
 
     res.status(204).send(order);
   }

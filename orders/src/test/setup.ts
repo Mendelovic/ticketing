@@ -7,8 +7,8 @@ declare global {
 }
 
 jest.mock("../amqpConnection");
-// jest.mock("../events/publishers/ticket-created-publisher");
-// jest.mock("../events/publishers/ticket-updated-publisher");
+jest.mock("../events/publishers/order-created-publisher");
+jest.mock("../events/publishers/order-cancelled-publisher");
 
 let mongo: any;
 beforeAll(async () => {

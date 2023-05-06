@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-
 import { app } from "./app";
 import { amqpConnection } from "./amqpConnection";
+import { TicketCreatedConsumer } from "./events/consumers/ticket-created-consumer";
+import { TicketUpdatedConsumer } from "./events/consumers/ticket-updated-consumer";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -19,11 +20,9 @@ const start = async () => {
       process.env.AMQP_URL,
       process.env.RABBITMQ_CLIENT_NAME
     );
-    amqpConnection.connection.on("close", () => {
-      process.exit();
-    });
-    process.on("SIGINT", async () => await amqpConnection.connection.close());
-    process.on("SIGTERM", async () => await amqpConnection.connection.close());
+
+    new TicketCreatedConsumer(amqpConnection.connection).startConsuming();
+    new TicketUpdatedConsumer(amqpConnection.connection).startConsuming();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
@@ -37,3 +36,9 @@ const start = async () => {
 };
 
 start();
+
+//   amqpConnection.connection.on("close", () => {
+//   process.exit();
+// });
+// process.on("SIGINT", async () => await amqpConnection.connection.close());
+// process.on("SIGTERM", async () => await amqpConnection.connection.close());
