@@ -1,4 +1,5 @@
 import { amqpConnection } from "./amqpConnection";
+import { OrderCreatedConsumer } from "./events/consumers/order-created-consumer";
 
 const start = async () => {
   if (!process.env.AMQP_URL) {
@@ -10,6 +11,8 @@ const start = async () => {
       process.env.AMQP_URL,
       process.env.RABBITMQ_CLIENT_NAME
     );
+
+    new OrderCreatedConsumer(amqpConnection.connection).startConsuming();
 
     amqpConnection.connection.on("close", () => {
       process.exit();

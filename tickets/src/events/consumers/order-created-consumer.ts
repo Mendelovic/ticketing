@@ -3,7 +3,7 @@ import { Ticket } from "../../models/ticket";
 import { TicketUpdatedPublisher } from "../publishers/ticket-updated-publisher";
 
 export class OrderCreatedConsumer extends Consumer<OrderCreatedEvent> {
-  readonly queueName = Queues.OrderCreated;
+  readonly queueName = Queues.OrderCreatedTickets;
   messagesBeingProcessed = 0;
 
   async onMessage(msg: OrderCreatedEvent["data"]): Promise<void> {
@@ -20,7 +20,7 @@ export class OrderCreatedConsumer extends Consumer<OrderCreatedEvent> {
 
     // Save the ticket and publish the updated ticket
     await ticket.save();
-    
+
     // await so in case there's an error it won't ack the message
     await new TicketUpdatedPublisher(this.conn).publish({
       id: ticket.id,

@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mendeltickets/common": "^1.0.3",
+    "@mendeltickets/common": "^1.0.14",
     "bull": "^4.10.4",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
