@@ -6,10 +6,7 @@ import {
   errorHandler,
   NotFoundError,
 } from "@mendeltickets/common";
-import { createTickerRouter } from "./routes/new";
-import { showTicketRouter } from "./routes/show";
-import { indexTicketRouter } from "./routes";
-import { updateTicketRouter } from "./routes/update";
+import { createChargeRouter } from "./routes/new";
 
 const app = express();
 
@@ -30,10 +27,7 @@ app.use(
 );
 app.use(currentUser);
 
-app.use(createTickerRouter);
-app.use(showTicketRouter);
-app.use(indexTicketRouter);
-app.use(updateTicketRouter);
+app.use(createChargeRouter);
 
 app.all("*", async () => {
   throw new NotFoundError();

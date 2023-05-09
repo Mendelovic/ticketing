@@ -3,7 +3,7 @@ import { Order, OrderStatus } from "./order";
 import { updateIfCurrentPlugin } from "mongoose-update-if-current";
 
 interface ITicketAttrs {
-  id: string;
+  id: string; // ID needs to be the same as the ID in ticketService
   title: string;
   price: number;
 }

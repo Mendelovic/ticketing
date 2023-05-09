@@ -3,12 +3,10 @@ import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
 declare global {
-  var signin: () => string[];
+  var signin: (id?: string) => string[];
 }
 
 jest.mock("../amqpConnection");
-jest.mock("../events/publishers/ticket-created-publisher");
-jest.mock("../events/publishers/ticket-updated-publisher");
 
 let mongo: any;
 beforeAll(async () => {
@@ -34,8 +32,8 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signin = () => {
-  const randomId = new mongoose.Types.ObjectId().toHexString();
+global.signin = (id?: string) => {
+  const randomId = id || new mongoose.Types.ObjectId().toHexString();
 
   // Fabricate a cookie of a signed in user to simulate testing
   // Build a JWT payload.

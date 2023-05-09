@@ -4,6 +4,7 @@ import { amqpConnection } from "./amqpConnection";
 import { TicketCreatedConsumer } from "./events/consumers/ticket-created-consumer";
 import { TicketUpdatedConsumer } from "./events/consumers/ticket-updated-consumer";
 import { ExpirationCompleteConsumer } from "./events/consumers/expiration-complete-consumer";
+import { PaymentCreatedConsumer } from "./events/consumers/payment-created-consumer";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -25,6 +26,7 @@ const start = async () => {
     new TicketCreatedConsumer(amqpConnection.connection).startConsuming();
     new TicketUpdatedConsumer(amqpConnection.connection).startConsuming();
     new ExpirationCompleteConsumer(amqpConnection.connection).startConsuming();
+    new PaymentCreatedConsumer(amqpConnection.connection).startConsuming();
 
     await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");

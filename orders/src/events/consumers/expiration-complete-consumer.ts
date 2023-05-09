@@ -19,6 +19,11 @@ export class ExpirationCompleteConsumer extends Consumer<ExpirationCompleteEvent
       throw new Error("Order not found");
     }
 
+    // An order that was paid for shouldn't be marked as cancelled.
+    if (order.status === OrderStatus.Complete) {
+      return;
+    }
+
     order.set({ status: OrderStatus.Cancelled });
     await order.save();
 

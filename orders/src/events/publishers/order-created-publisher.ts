@@ -6,19 +6,20 @@ import {
 } from "@mendeltickets/common";
 
 export class OrderCreatedPublisher extends Publisher<OrderCreatedEvent> {
-  // TODO: REMINDER - There are 2 queues that can assigned to it.
+  // TODO: REMINDER - There are 3 queues that can assigned to it.
   // Find an elegant solution for this, right now the naming is confusing.
-  readonly queueName = Queues.OrderCreatedTickets; // Queues.OrderCreatedExpiration
+  readonly queueName = Queues.OrderCreatedTickets; // Queues.OrderCreatedExpiration | Queues.OrderCreatedPayments
 
-  private readonly ticketServiceQueueName: Queues = Queues.OrderCreatedTickets;
-  private readonly expirationQueueName: Queues = Queues.OrderCreatedExpiration;
+  private readonly paymentServiceQueueName = Queues.OrderCreatedPayments;
+  private readonly ticketServiceQueueName = Queues.OrderCreatedTickets;
+  private readonly expirationQueueName = Queues.OrderCreatedExpiration;
 
   private readonly exchangeName: OrderCreatedEvent["exchange"] =
     Exchanges.OrderCreated;
   private exchangeType = "fanout";
 
   // Custom publish
-  async publish(data: OrderCreatedEvent["data"]): Promise<void> {
+  override async publish(data: OrderCreatedEvent["data"]): Promise<void> {
     try {
       const ch = await this.conn.createChannel();
       await ch.assertExchange(this.exchangeName, this.exchangeType, {
@@ -27,13 +28,15 @@ export class OrderCreatedPublisher extends Publisher<OrderCreatedEvent> {
 
       await ch.assertQueue(this.expirationQueueName);
       await ch.assertQueue(this.ticketServiceQueueName);
+      await ch.assertQueue(this.paymentServiceQueueName);
 
       await ch.bindQueue(this.expirationQueueName, this.exchangeName, "");
       await ch.bindQueue(this.ticketServiceQueueName, this.exchangeName, "");
+      await ch.bindQueue(this.paymentServiceQueueName, this.exchangeName, "");
 
       const isSent = ch.publish(
         this.exchangeName,
-        "",
+        '',
         Buffer.from(JSON.stringify(data))
       );
 

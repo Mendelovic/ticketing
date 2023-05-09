@@ -3,7 +3,7 @@ import { Ticket } from "../../models/ticket";
 import { TicketUpdatedPublisher } from "../publishers/ticket-updated-publisher";
 
 export class OrderCancelledConsumer extends Consumer<OrderCancelledEvent> {
-  readonly queueName = Queues.OrderCancelled;
+  readonly queueName = Queues.OrderCancelledTickets;
   messagesBeingProcessed = 0;
 
   async onMessage(msg: OrderCancelledEvent["data"]): Promise<void> {
