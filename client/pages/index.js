@@ -1,17 +1,36 @@
-import BuildClient from "@/api/build-client";
+import Link from "next/link";
 
-export default function Home({ currentUser }) {
-  return currentUser ? (
-    <h1>You are signed in</h1>
-  ) : (
-    <h1>You are not signed in</h1>
+export default function Home({ currentUser, tickets }) {
+  const ticketList = tickets.map((ticket) => (
+    <tr key={ticket.id}>
+      <td>{ticket.title}</td>
+      <td>{ticket.price}</td>
+      <td>
+        <Link href="/tickets/[ticketId]" as={`/tickets/${ticket.id}`}>
+          View
+        </Link>
+      </td>
+    </tr>
+  ));
+
+  return (
+    <div>
+      <h1>Tickets</h1>
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>{ticketList}</tbody>
+      </table>
+    </div>
   );
 }
 
-Home.getInitialProps = async (ctx) => {
-  console.log("landing page");
-
-  const client = BuildClient(ctx);
-  const { data } = await client.get("/api/users/currentuser");
-  return data;
+Home.getInitialProps = async (ctx, client, currentUser) => {
+  const { data } = await client.get("/api/tickets");
+  return { tickets: data };
 };

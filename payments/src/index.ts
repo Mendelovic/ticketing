@@ -4,6 +4,7 @@ import { app } from "./app";
 import { amqpConnection } from "./amqpConnection";
 import { OrderCreatedConsumer } from "./events/consumers/order-created-consumer";
 import { OrderCancelledConsumer } from "./events/consumers/order-cancelled-consumer";
+import { OrderCompletedConsumer } from "./events/consumers/order-completed-consumer";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -24,6 +25,7 @@ const start = async () => {
 
     new OrderCreatedConsumer(amqpConnection.connection).startConsuming();
     new OrderCancelledConsumer(amqpConnection.connection).startConsuming();
+    new OrderCompletedConsumer(amqpConnection.connection).startConsuming();
 
     amqpConnection.connection.on("close", () => {
       process.exit();

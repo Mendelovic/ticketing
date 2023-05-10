@@ -4,17 +4,16 @@ import { useState } from "react";
 export default function useRequest({ url, method, body, onSuccess }) {
   const [errors, setErrors] = useState(null);
 
-  const doRequest = async () => {
+  const doRequest = async (props = {}) => {
     try {
       setErrors(null);
       // for example method === 'post'
-      const response = await axios[method](url, body);
+      const response = await axios[method](url, { ...body, ...props });
 
       if (onSuccess) {
         onSuccess(response.data);
       }
       return response.data;
-
     } catch (err) {
       setErrors(
         <div className="alert alert-danger">

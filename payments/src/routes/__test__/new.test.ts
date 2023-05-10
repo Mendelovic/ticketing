@@ -3,10 +3,8 @@ import { app } from "../../app";
 import mongoose from "mongoose";
 import { Order } from "../../models/order";
 import { OrderStatus } from "@mendeltickets/common";
-import dotenv from "dotenv";
 import { stripe } from "../../stripe";
 import { Payment } from "../../models/payment";
-dotenv.config();
 
 it("returns a 404 when purchasing an order that does not exist", async () => {
   await request(app)
