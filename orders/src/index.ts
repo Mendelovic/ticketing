@@ -7,7 +7,7 @@ import { ExpirationCompleteConsumer } from "./events/consumers/expiration-comple
 import { PaymentCreatedConsumer } from "./events/consumers/payment-created-consumer";
 
 const start = async () => {
-  console.log("Starting up...");
+  console.log("Starting up....");
 
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
