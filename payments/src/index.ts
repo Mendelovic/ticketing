@@ -7,6 +7,8 @@ import { OrderCancelledConsumer } from "./events/consumers/order-cancelled-consu
 import { OrderCompletedConsumer } from "./events/consumers/order-completed-consumer";
 
 const start = async () => {
+  console.log("Starting up...");
+
   if (!process.env.JWT_KEY) {
     throw new Error("JWT_KEY must be defined");
   }
