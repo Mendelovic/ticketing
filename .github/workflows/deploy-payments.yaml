@@ -20,6 +20,6 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
       - name: Save DigitalOcean kubeconfig
-        run: doctl kubernetes cluster kubeconfig save k8s-ticketing
+        run: doctl kubernetes cluster kubeconfig save 2444a7a5-1b00-4874-90e3-2fb1368d532c
       - name: Restart payments deployment
         run: kubectl rollout restart deployment payments-depl
