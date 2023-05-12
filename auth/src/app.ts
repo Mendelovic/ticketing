@@ -19,12 +19,17 @@ app.use(json());
 // as it's only holding JWT, and JWT cannot be tampered
 // - signed: false - the cookie data will not be encrypted with a secret key
 // - secure: true - the cookie will only be sent over HTTPS connections
-app.use(
-  cookieSession({
-    signed: false,
-    secure: process.env.NODE_ENV !== "test",
-  })
-);
+
+// HTTPS
+// app.use(
+//   cookieSession({
+//     signed: false,
+//     secure: process.env.NODE_ENV !== "test",
+//   })
+// );
+
+// HTTP
+app.use(cookieSession({ signed: false, secure: false }));
 
 app.use(currentUserRouter);
 app.use(signinRouter);
