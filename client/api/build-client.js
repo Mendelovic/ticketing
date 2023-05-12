@@ -8,9 +8,17 @@ export default function BuildClient({ req }) {
     // Because ingress-nginx-controller is in another namespace, request should reach namespace of ingress-nginx
     // - Attach the headers of the original request
     // - Including the cookie that holds the JWT, and the host ('ticketing.dev') to the new request
+
+    // DEV
+    // return axios.create({
+    //   baseURL:
+    //     "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+    //   headers: req.headers,
+    // });
+
+    // PROD
     return axios.create({
-      baseURL:
-        "http://ingress-nginx-controller.ingress-nginx.svc.cluster.local",
+      baseURL: "mendelovic-app-prod.site/",
       headers: req.headers,
     });
   } else {
