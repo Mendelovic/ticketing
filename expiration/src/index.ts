@@ -2,6 +2,8 @@ import { amqpConnection } from "./amqpConnection";
 import { OrderCreatedConsumer } from "./events/consumers/order-created-consumer";
 
 const start = async () => {
+  console.log("Starting up...");
+
   if (!process.env.AMQP_URL) {
     throw new Error("AMQP_URL must be defined");
   }
