@@ -1,0 +1,25 @@
+name: deploy-payments
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "payments/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: cd payments && docker build -t mendelovic/payments .
+      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - run: docker push mendelovic/payments
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      - name: Save DigitalOcean kubeconfig
+        run: doctl kubernetes cluster kubeconfig save k8s-ticketing
+      - name: Restart payments deployment
+        run: kubectl rollout restart deployment payments-depl
