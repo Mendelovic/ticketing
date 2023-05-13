@@ -61,6 +61,8 @@ it("returns a 201 with valid inputs", async () => {
   const userId = new mongoose.Types.ObjectId().toHexString();
   const price = Math.floor(Math.random() * 1000);
 
+  const amountInCents = Math.round(price * 100);
+
   const order = Order.build({
     id: new mongoose.Types.ObjectId().toHexString(),
     userId,
@@ -78,7 +80,7 @@ it("returns a 201 with valid inputs", async () => {
   const stripeCharges = await stripe.charges.list();
 
   const stripeCharge = stripeCharges.data.find(
-    (charge) => charge.amount === price * 100
+    (charge) => charge.amount === amountInCents
   );
 
   expect(stripeCharge).toBeDefined();

@@ -44,9 +44,11 @@ router.post(
       throw new BadRequestError("Order has already been paid for");
     }
 
+    const amountInCents = Math.round(order.price * 100);
+    // Stripe uses an integer of the smallest available currency (in this case, cents)
     const charge = await stripe.charges.create({
       currency: "usd",
-      amount: order.price * 100,
+      amount: amountInCents,
       source: token,
     });
 
