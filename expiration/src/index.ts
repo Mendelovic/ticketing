@@ -23,6 +23,7 @@ const start = async () => {
     process.on("SIGTERM", async () => await amqpConnection.connection.close());
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
