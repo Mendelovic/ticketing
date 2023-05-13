@@ -18,7 +18,7 @@ export default function BuildClient({ req }) {
 
     // PROD
     return axios.create({
-      baseURL: "http://www.ticketing-app-prod.xyz/",
+      baseURL: "http://www.mendelovic-app-prod.site/",
       headers: req.headers,
     });
   } else {
