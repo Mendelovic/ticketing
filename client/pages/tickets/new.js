@@ -25,11 +25,6 @@ export default function NewTicket() {
     if (isNaN(value)) {
       return;
     }
-    if (value < 0.5) {
-      setPrice(0.5);
-    } else if (value >= 1000000) {
-      setPrice(999999.99);
-    }
 
     setPrice(value.toFixed(2));
   };
