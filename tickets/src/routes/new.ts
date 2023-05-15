@@ -13,7 +13,7 @@ router.post(
   [
     body("title").not().isEmpty().withMessage("Title is required"),
     body("price")
-      .isFloat({ gt: 0 })
+      .isFloat({ gt: 0.49, lt: 1000000 }) // Stripe limits in usd
       .withMessage("Price must be greater than 0"),
   ],
   validateRequest,
