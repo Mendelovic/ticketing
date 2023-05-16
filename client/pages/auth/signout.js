@@ -14,7 +14,7 @@ export default function Signout() {
 
   useEffect(() => {
     doRequest();
-  }, []);
+  }, [doRequest]);
 
   return <div>Signing you out...</div>;
 }
