@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@mendeltickets/common": "^1.0.19",
+    "@mendeltickets/common": "^1.0.21",
     "bull": "^4.10.4"
   },
   "devDependencies": {
